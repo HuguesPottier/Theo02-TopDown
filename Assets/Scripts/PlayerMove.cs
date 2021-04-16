@@ -5,11 +5,20 @@ using UnityEngine;
 public class PlayerMove : MonoBehaviour
 {
     public float speed;
+
+
     private Transform myTransform;
+    private Rigidbody myRigidBody;
+
+
+
+
+
 
     private void Start() 
     {
         myTransform = transform;    
+        myRigidBody = GetComponent<Rigidbody>();
     }
     private void Update() 
     {   
@@ -35,6 +44,9 @@ public class PlayerMove : MonoBehaviour
 
         myTransform.Translate(direction * Time.deltaTime * speed, Space.World);  //Utilise les valeurs locales  // tester aussi Space.local
         
+
+        myRigidBody.velocity = Vector3.zero;
+        //myRigidBody.velocity = new Vector3(0, 0, 0);  // explication de la ligne du haut
 
     }
 }
