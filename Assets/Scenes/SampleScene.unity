@@ -373,6 +373,8 @@ MonoBehaviour:
   muzzleFlash: {fileID: 497973798}
   collisionExplosionPrefab: {fileID: 5244034629362347645, guid: 73139a71f49b7364d998a275a7d4ae7d, type: 3}
   gizmoLength: 0.5
+  bulletTrailPrefab: {fileID: 8840081063807012005, guid: cb959c67b36f6d3428e6b683945e63a1, type: 3}
+  shootPeriod: 0.1
 --- !u!1001 &157803203
 PrefabInstance:
   m_ObjectHideFlags: 0

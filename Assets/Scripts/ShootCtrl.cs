@@ -9,9 +9,14 @@ public class ShootCtrl : MonoBehaviour
     public ParticleSystem collisionExplosionPrefab;  //on ajoute prefab à la fin
     public float gizmoLength;
     public TrailRenderer bulletTrailPrefab;
+    public float shootPeriod;    //temps entre deux shoot
+
+
+
     private Transform _transform; //anciennement myTransform, c'est juste une question de convention,
     private RaycastHit _hitInfo;
     private bool _isHit;
+    private float _nextShootTime;
 
 
 
@@ -23,6 +28,8 @@ public class ShootCtrl : MonoBehaviour
     void Start() 
     {
         _transform = transform;
+        _nextShootTime = 0f;
+
     }
 
 
@@ -34,8 +41,9 @@ public class ShootCtrl : MonoBehaviour
     {
         _isHit = Physics.Raycast(_transform.position, _transform.forward, out _hitInfo);
 
-        if(Input.GetMouseButtonDown(0))   //zéro c'est le bouton gauche
+        if(Input.GetMouseButton(0) && Time.time >= _nextShootTime)   //zéro c'est le bouton gauche //Time.time, c'est le temps actuel depuis l'ecoulement du jeux
         {
+
             muzzleFlash.Play();
 
             //Instancier prefab
@@ -51,6 +59,8 @@ public class ShootCtrl : MonoBehaviour
                 bulletTrail.transform.position = _hitInfo.point;  //idem ligne du dessous mais gere differement les couleurs
                 //bulletTrail.AddPosition(_hitInfo.point);  // semble idem à la ligne précédente sauf pour les gradient de couleurs, ici tout est opaque  //définit le point d'arrivee du trail, grace à la methode AddPosition
             }
+
+            _nextShootTime = Time.time + shootPeriod;  //empeche de mitrailler à mort, immpose un delais entre les clicks
 
           
         }
