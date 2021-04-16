@@ -7,25 +7,51 @@ public class ShootCtrl : MonoBehaviour
 
     public ParticleSystem muzzleFlash;
     public ParticleSystem collisionExplosionPrefab;  //on ajoute prefab à la fin
+    public float gizmoLength;
+    private Transform _transform; //anciennement myTransform, c'est juste une question de convention,
+    private RaycastHit _hitInfo;
+    private bool _isHit;
 
-    void Update()
+
+
+
+
+
+
+
+    void Start() 
     {
+        _transform = transform;
+    }
+
+
+
+
+
+
+    private void Update()
+    {
+        _isHit = Physics.Raycast(_transform.position, _transform.forward, out _hitInfo);
+
         if(Input.GetMouseButtonDown(0))   //zéro c'est le bouton gauche
         {
             muzzleFlash.Play();
 
-            if(Physics.Raycast(transform.position, transform.forward, out RaycastHit hitInfo))
+            if(_isHit)
             {
-                // faire des trucs avec la collision detectin
-                //Debug.Log("hit");
-                Debug.Log(hitInfo.collider.name);
-                //cree un gameoblet a partir d'un prefab
-                ParticleSystem collisionExplosion = Instantiate(collisionExplosionPrefab, hitInfo.point, Quaternion.identity);
-                collisionExplosion.transform.LookAt(hitInfo.normal);
-
-                //Destroy(hitInfo.collider.gameObject);
-                Destroy(hitInfo.transform.gameObject);
+                ParticleSystem collisionExplosion = Instantiate(collisionExplosionPrefab, _hitInfo.point, Quaternion.identity);
+                collisionExplosion.transform.rotation = Quaternion.LookRotation(_hitInfo.normal);
+                
+                Destroy(collisionExplosion.gameObject, 1f); // le 1f c'est le timer avant distroy des particules "doublons" qui apparaissent dans le script
             }
+
+          
         }
+    }
+
+    private void OnDrawGizmos() 
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(_hitInfo.point, _hitInfo.point + _hitInfo.normal * gizmoLength);  // aides visuelles dans le jeux
     }
 }
