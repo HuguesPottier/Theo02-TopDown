@@ -10,6 +10,7 @@ public class ShootCtrl : MonoBehaviour
     public float gizmoLength;
     public TrailRenderer bulletTrailPrefab;
     public float shootPeriod;    //temps entre deux shoot
+    //public LayerMask destructableLayer;
 
 
 
@@ -52,12 +53,22 @@ public class ShootCtrl : MonoBehaviour
 
             if(_isHit)
             {
+                GameObject _hitObjetc = _hitInfo.collider.gameObject;
+
+                if(LayerMask.LayerToName(_hitObjetc.layer) == "Destructable")
+                //if(_hitObjetc.layer == destructableLayer.value)
+                {
+                    Destroy(_hitObjetc);
+                }
+
                 ParticleSystem collisionExplosion = Instantiate(collisionExplosionPrefab, _hitInfo.point, Quaternion.identity);
                 collisionExplosion.transform.rotation = Quaternion.LookRotation(_hitInfo.normal);
                 
                 Destroy(collisionExplosion.gameObject, 1f); // le 1f c'est le timer avant distroy des particules "doublons" qui apparaissent dans le script
                 bulletTrail.transform.position = _hitInfo.point;  //idem ligne du dessous mais gere differement les couleurs
                 //bulletTrail.AddPosition(_hitInfo.point);  // semble idem à la ligne précédente sauf pour les gradient de couleurs, ici tout est opaque  //définit le point d'arrivee du trail, grace à la methode AddPosition
+            
+
             }
 
             _nextShootTime = Time.time + shootPeriod;  //empeche de mitrailler à mort, immpose un delais entre les clicks
